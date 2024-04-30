@@ -4,11 +4,10 @@ import React from "react";
 const DataProcessor = ({ algorithm, file }) => {
   const processData = async () => {
     const formData = new FormData();
-    formData.append("algorithm", algorithm);
     formData.append("file", file);
 
     try {
-      const response = await fetch("", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${algorithm}`, {
         method: "POST",
         body: formData,
       });
