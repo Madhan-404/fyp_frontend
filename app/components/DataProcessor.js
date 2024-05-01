@@ -8,7 +8,7 @@ const DataProcessor = ({ algorithm, file }) => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("", {
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL, {
         method: "POST",
         body: formData,
       });
