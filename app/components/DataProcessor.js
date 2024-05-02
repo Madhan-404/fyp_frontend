@@ -1,19 +1,18 @@
 "use client";
+import axios from "axios";
 import React from "react";
 
-const DataProcessor = ({ algorithm, file }) => {
+const DataProcessor = ({ updatePlotData, file }) => {
   const processData = async () => {
-    const formData = new FormData();
-    formData.append("file", file);
-
+    
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${algorithm}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to process data");
+      const formData = new FormData();
+      formData.append("file", file);
+      const algorithms = ["aco_predict","lkh_predict","local_search_predict","bnb_predict","hopfield_nn_predict"]
+      for(const algorithm of algorithms){
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${algorithm}`,formData,{headers:{'Content-Type': 'multipart/form-data'}})
+        const {Permutation,Distance} = response.data
+        await updatePlotData(Permutation,algorithm,Distance)
       }
 
     } catch (error) {
@@ -22,10 +21,10 @@ const DataProcessor = ({ algorithm, file }) => {
   };
 
   React.useEffect(() => {
-    if (algorithm && file) {
+    if (file) {
       processData();
     }
-  }, [algorithm, file]);
+  }, [file]);
 
   return null;
 };
